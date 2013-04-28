@@ -1,0 +1,7 @@
+{
+    "consumer_key": "",
+    "consumer_secret": "",
+    "oauth_callback": "",
+    "session_oauth_token_name": "oauth_token",
+    "session_oauth_token_secret_name": "oauth_token_secret"
+}

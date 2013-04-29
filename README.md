@@ -35,23 +35,28 @@ You can pass in the **oauth_token** and **oauth_token_secret** to the constructo
 To request a token simply call:
 
 	$url = $auth->getRequestToken();
+	
+This will return **oauth_token**, **oauth_token_secret**.  At this point you probably want to save these keys in `$_SESSION['oauth_token']` and `$_SESSION['oauth_token_secret']`. Or you can save them else where, but they will be needed when the the user is redirected back to the callback page. I recommend using sessions.
 
-This will give you the url to concatenate with the Twitter url:
+Now we have to concatenate the **oauth_token** to the authenticate url:
 
+	<?php $url = 'oauth_token='.$_SESSION['oauth_token]; ?>
 	<a href="https://api.twitter.com/oauth/authenticate?<?= $url; ?>">Sign in with Twitter</a>
 	
 ### Access Keys
-The **oauth_token** and **oauth_verifire** returned to the callback from Twitter will be required for this step. Either save the oauth_token to the `$_SESSION['oauth_token']` or pass it through to the object when instantiating it.
+The **oauth_token** and **oauth_verifire** returned to the callback from Twitter will be required for this step. Either save the oauth_token to the `$_SESSION['oauth_token']` or pass it through to the object when instantiating it. You should also check that the oauth_token that is returned is the same as the one that you saved on the previous step.
 
-	$_SESSION['oauth_token'] = 'oauth_token_returned';
 	$auth = new TwOauth();
-	$keys = $auth->getAccessKey('oauth_verifier_returned');
+	$keys = $auth->getAccessKey('oauth_verifier');
 	
 	// Or if you're not using session for this
-	$auth = new TwOauth('oauth_token_returned');
-	$keys = $auth->getAccessKey('oauth_verifier_returned');
+	$auth = new TwOauth(
+		'oauth_token',
+		'oauth_token_secret'
+	);
+	$keys = $auth->getAccessKey('oauth_verifier');
 	
-The **oauth_token** and **oauth_token_secret** will be returned and this should be stored by the app. At this point you probably want to save these keys in `$_SESSION['oauth_token']` and `$_SESSION['oauth_token_secret']`. As these will be needed for every signed request to Twitter.
+The upgraded **oauth_token** and **oauth_token_secret** will be returned and this should be stored by the app. At this point you probably want to save these keys in `$_SESSION['oauth_token']` and `$_SESSION['oauth_token_secret']`. As these will be needed for every signed request to Twitter.
 
 If at this point you have the key and want to continue making a request using the same instance of TwOauth, then you'll have to update the keys by:
 

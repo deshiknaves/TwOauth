@@ -116,6 +116,8 @@ class twOauth
      */
     public function getRequestToken($callback = null)
     {
+        $params = $this->getOauth();
+
         // Use default if not set
         if ( ! $callback) {
             $callback = $this->oauth_callback;
@@ -123,7 +125,7 @@ class twOauth
         
         // Incase a callback isn't needed
         if ( ! empty($callback)) {
-            $params = $this->getOauth(array('oauth_callback' => $callback));
+            $params['oauth_callback'] = $callback;
         }
 
         // Auth token will be set
@@ -186,7 +188,7 @@ class twOauth
 
         $params = $this->getOauth($data);
 
-        $params['oauth_signature'] = $this->buildSignature('GET', $params, $url, $this->oauth_token_secret);
+        $params['oauth_signature'] = $this->buildSignature('GET', $params, $url);
         
         $headers = $this->buildHeaders($params);
         $url     = $this->prepareUrl($data, $url);
@@ -205,7 +207,7 @@ class twOauth
     {   
         $params = $this->getOauth($data);
 
-        $params['oauth_signature'] = $this->buildSignature('POST', $params, $url, $this->oauth_token_secret);
+        $params['oauth_signature'] = $this->buildSignature('POST', $params, $url);
         
         $headers = $this->buildHeaders($params);
 
@@ -269,7 +271,7 @@ class twOauth
      * @param  (array) $params The params
      * @return (string)        The built signature
      */
-    private function buildSignature($type, $params, $url, $secret = '')
+    private function buildSignature($type, $params, $url)
     {
         $keys   = $this->encode(array_keys($params));
         $values = $this->encode(array_values($params));

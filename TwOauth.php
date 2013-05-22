@@ -229,7 +229,7 @@ class twOauth
             
             // Uglyfy the params for url string
             foreach ($params as $key => $value) {
-                $urlPairs[] = $key."=".$value;
+                $urlPairs[] = $key."=".urlencode($value);
             }
      
             $urlParams = implode('&', $urlPairs);

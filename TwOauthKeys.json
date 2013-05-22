@@ -2,6 +2,7 @@
     "consumer_key": "",
     "consumer_secret": "",
     "oauth_callback": "",
+    "api_uri": "https://api.twitter.com/1.1/",
     "session_oauth_token_name": "oauth_token",
     "session_oauth_token_secret_name": "oauth_token_secret"
 }

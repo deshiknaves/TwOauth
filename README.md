@@ -15,11 +15,12 @@ Change the keys and details in the **TwOauthKeys.json** file.
 	    "consumer_key": "",
 	    "consumer_secret": "",
 	    "oauth_callback": "",
+	    "api_uri": "https://api.twitter.com/1.1/",
 	    "session_oauth_token_name": "oauth_token",
 	    "session_oauth_token_secret_name": "oauth_token_secret"
 	}
 	
-The **consumer_key** and **consumer_secret** as provided by Twitter when creating a new app. The **oauth_callback** is the page where Twitter should redirect to once authenticated. This can be left blank if you are not using a redirect. **session_oauth_token_name** and **session_oauth_token_secret_name** are the names of the session variables that will store the consumer oAuth keys. These are not required if you don't intend on storing them in the $_SESSION variable. In which case, you can pass them into the __constuct mechanism when instantiating an object.
+The **consumer_key** and **consumer_secret** as provided by Twitter when creating a new app. The **oauth_callback** is the page where Twitter should redirect to once authenticated. This can be left blank if you are not using a redirect. The **api_uri** is the first part of the resource url. This is a convenience attribute, so you can just pass _search/tweets.json_ instead of the entire url. You can remove the value here if you don't want to use it. **session_oauth_token_name** and **session_oauth_token_secret_name** are the names of the session variables that will store the consumer oAuth keys. These are not required if you don't intend on storing them in the $_SESSION variable. In which case, you can pass them into the __constuct mechanism when instantiating an object.
 
 ## Usage
 To use the library, simply instantiate a new TwOuth object:
@@ -72,9 +73,9 @@ All you need is the API end point and the items to query
 		'screen_name' => 'screen_name',
 	);
 	
-	$auth->get('https://api.twitter.com/1.1/statuses/user_timeline.json', $options);
+	$auth->get('https://api.twitter.com/1.1/statuses/user_timeline.json', $options, $full);
 	
-You can omit the `$options` array if your query doesn't require one.
+You can omit the `$options` array if your query doesn't require one. By default `full` is set to `false`, you can set this to true if you want to pass in a full url instead of partial (the other half will be set from the TwOauthKeys.json keys). You can ignore it if you have unset the key in the file or are using a partial like _search/tweets.json_.
 
 ### POST Request
 
@@ -84,7 +85,7 @@ Very similar to GET requests:
 		'status' => 'This is your status',
 	);
 	
-	$auth->get('https://api.twitter.com/1.1/statuses/update.json', $options);
+	$auth->get('https://api.twitter.com/1.1/statuses/update.json', $options, $full);
 	
 ## Future
 I'll extend this further so it is complete in all featured (i.e. xAuth and other signature building methods). However, most of the time, this is all that is needed from a Twitter oAuth class.

@@ -16,6 +16,7 @@ class twOauth
     private $oauth_token_secret;
     private $consumer_secret;
     private $oauth_callback;
+    private $api_uri;
 
 
     /**
@@ -31,25 +32,24 @@ class twOauth
         $config = $this->getConfig();
 
         // Error checking
-        if ( ! isset($config->consumer_key) ||
-             ! isset($config->consumer_secret) ||
-             empty($config->consumer_key) ||
-             empty($config->consumer_secret)
-        ) {
+        if ( empty($config->consumer_key) || empty($config->consumer_secret)) {
             throw new Exception("Error Required Keys missing. Please add 
                 the keys to keys file", 1);       
         }
 
+        // Set the API uri, if it's set
+        if ( ! empty($config->api_uri)) {
+            $this->api_uri = $config->api_uri;
+        }
+
         // Check to see if the session names are set
-        if (isset($config->session_oauth_token_name) &&
-            ! empty($config->session_oauth_token_name) &&
+        if (! empty($config->session_oauth_token_name) &&
             ! $oauth_token &&
             isset($_SESSION[$config->session_oauth_token_name])) {
             $oauth_token = $_SESSION[$config->session_oauth_token_name];
         }
 
-        if (isset($config->session_oauth_token_secret_name) &&
-            ! empty($config->session_oauth_token_secret_name) &&
+        if (! empty($config->session_oauth_token_secret_name) &&
             ! $oauth_token_secret &&
             isset($_SESSION[$config->session_oauth_token_secret_name])) {
             $oauth_token_secret = $_SESSION[$config->session_oauth_token_secret_name];
@@ -179,12 +179,17 @@ class twOauth
 
     /**
      * GET a request to twitter
-     * @param  (string) $url  The url to be queried
-     * @param  (array) $data  The additional queires array
+     * @param  (string) $url   The url to be queried
+     * @param  (array)  $data  The additional queires array
+     * @param  (bool)   $full  If the url passed is a full url
      * @return (string)       The JSON response
      */
-    function get($url, $data = array())
+    function get($url, $data = array(), $full = false)
     {
+        // Set the url if the api uri is set
+        if ( ! empty($this->api_uri) && ! $full) {
+            $url = $this->api_uri.$url;
+        }
 
         $params = $this->getOauth($data);
 
@@ -199,12 +204,18 @@ class twOauth
 
     /**
      * POST a request to twitter
-     * @param  (string) $url  The url to be queried
-     * @param  (array) $data  The additional queires array
+     * @param  (string) $url   The url to be queried
+     * @param  (array)  $data  The additional queires array
+     * @param  (bool)   $full  If the url passed is a full url
      * @return (string)       The JSON response
      */
-    function post($url, $data = array())
+    function post($url, $data = array(), $full = false)
     {   
+        // Set the url if the api uri is set
+        if ( ! empty($this->api_uri) && ! $full) {
+            $url = $this->api_uri.$url;
+        }
+
         $params = $this->getOauth($data);
 
         $params['oauth_signature'] = $this->buildSignature('POST', $params, $url);

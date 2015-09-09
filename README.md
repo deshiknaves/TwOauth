@@ -73,7 +73,7 @@ All you need is the API end point and the items to query
 		'screen_name' => 'screen_name',
 	);
 	
-	$auth->get('https://api.twitter.com/1.1/statuses/user_timeline.json', $options, $full);
+	$auth->get('statuses/user_timeline.json', $options, $full);
 	
 You can omit the `$options` array if your query doesn't require one. By default `full` is set to `false`, you can set this to true if you want to pass in a full url instead of partial (the other half will be set from the TwOauthKeys.json keys). You can ignore it if you have unset the key in the file or are using a partial like _search/tweets.json_.
 
@@ -85,7 +85,7 @@ Very similar to GET requests:
 		'status' => 'This is your status',
 	);
 	
-	$auth->get('https://api.twitter.com/1.1/statuses/update.json', $options, $full);
+	$auth->get('statuses/update.json', $options, $full);
 	
 ## Future
 I'll extend this further so it is complete in all featured (i.e. xAuth and other signature building methods). However, most of the time, this is all that is needed from a Twitter oAuth class.

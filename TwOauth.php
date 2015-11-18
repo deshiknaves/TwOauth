@@ -132,13 +132,13 @@ class twOauth
         unset($params['oauth_token']);
 
         // Create oAuth Signature
-        $params['oauth_signature'] = $this->buildSignature('GET', $params, static::REQUEST_URL);
-
+        $params['oauth_signature'] = $this->buildSignature('POST', $params, static::REQUEST_URL);
+        ksort($params);
+        
         $headers = $this->buildHeaders($params);
-        $url = $this->prepareUrl($params, static::REQUEST_URL);
 
         // Make the request
-        return $this->request($url);          
+        return $this->request($this->request_url, $header, $params);          
     }
 
     /**
@@ -198,7 +198,7 @@ class twOauth
         $headers = $this->buildHeaders($params);
         $url     = $this->prepareUrl($data, $url);
 
-        return $this->request($url, $headers);
+        return $this->encode($this->request($url, $headers));
     }
 
 
@@ -300,7 +300,7 @@ class twOauth
         $base   = $type."&".$this->encode($url)."&".$this->encode($paramString);
         $secret = $this->encode($this->consumer_secret)."&".$this->encode($this->oauth_token_secret);
 
-        return $this->encode(base64_encode(hash_hmac('sha1', $base, $secret, TRUE)));
+        return base64_encode(hash_hmac('sha1', $base, $secret, TRUE));
     }
 
 
